@@ -62,26 +62,6 @@ function trim-git(){
     echo -e $output | column -t -s ', '
 }
 
-function nwmount(){
-	nwroot="${HOME}/Miscellaneous/NWdrive"
-	mkdir -p "${nwroot}/sandbox"
-	mkdir -p "${nwroot}/public"
-	mkdir -p "${nwroot}/ycho"
-	mkdir -p "${nwroot}/research"
-	sudo mount "//fsvs01/Research" ${nwroot}/research -o user=ycho,workgroup=olin.edu,uid=jamiecho
-	sudo mount "//fsvs01/Sandbox" ${nwroot}/sandbox -o user=ycho,workgroup=olin.edu,uid=jamiecho
-	sudo mount "//fsvs01/Public" ${nwroot}/public -o user=ycho,workgroup=olin.edu,uid=jamiecho
-	sudo mount "//FSVS01/Users/Students/2019/ycho" ${nwroot}/ycho -o user=ycho,workgroup=olin.edu,uid=jamiecho
-}
-
-function nwumount(){
-	nwroot="${HOME}/Miscellaneous/NWdrive"
-	sudo umount ${nwroot}/research
-	sudo umount ${nwroot}/sandbox
-	sudo umount ${nwroot}/public
-	sudo umount ${nwroot}/ycho
-}
-
 function pykill(){
 	kill $(ps -ef | grep $1 | grep python | awk '{print $2}')
 }
@@ -117,31 +97,6 @@ function watermark(){
 			composite -dissolve 30% -gravity southeast ~/Documents/watermark.png "$1" "$outfile"
 		fi
 	fi
-}
-
-function list-rosdeps(){
-	src="$1"
-	d0="$PWD"
-	echo "inspecting package $src"
-	roscd "$src"
-	for pkg in $(rospack list | awk '{print $1}'); do
-		cnt=$(grep -hrIc $pkg . --exclude-dir=".git" | paste -sd+ | bc)
-		if [ "$cnt" -gt "0" ]; then
-			echo $pkg $cnt
-		fi
-	done
-	cd "$d0"
-}
-
-function search-rosdeps(){
-    # package.xml (build)
-    find -name package.xml -exec sh -c 'grep -i depend {} | sed "s@.*>\(.*\)<.*@\1@"' \;
-    # python deps (runtime)
-    find -name '*.py' -exec grep import {} \;
-    # launch deps (runtime)
-    find -name '*.launch' -exec sh -c 'grep find {} | sed "s@.*find\(.*\)).*@\1@"' \;
-    # cmake deps
-    find -name 'CMakeLists.txt' -exec sh -c 'grep -Poz find_package(.*)' \;
 }
 
 function make-gif(){
@@ -186,11 +141,6 @@ function echo-latest-file(){
         [[ "$file" -nt $latest ]] && latest="$file"
     done
     echo $latest
-}
-
-function toresolve(){
-	#ffmpeg -i "$1" -vcodec dnxhd -acodec pcm_s16le -s 1920x1080 -r 30000/1001 -b:v 36M -pix_fmt yuv422p -f mov "$2"
-    ffmpeg -y -i "$1" -c:v mpeg4 -force_key_frames "expr:gte(t,n_forced*1)" -r ntsc-film -b:v 250000k -c:a pcm_s16le "$2"
 }
 
 function update-dotfiles(){

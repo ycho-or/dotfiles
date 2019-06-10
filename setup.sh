@@ -15,6 +15,7 @@ function list-dotfiles(){
 for src in $(list-dotfiles); do
     dst="$HOME/$(basename $src)"
     if [ -f "$dst" ]; then
+	cp "$dst" "$dst.bak"
         rm -i "$dst"
     fi
     ln -sv "$(realpath $src)" "$dst"

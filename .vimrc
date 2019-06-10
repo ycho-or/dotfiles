@@ -37,6 +37,8 @@ Plugin 'https://github.com/tpope/vim-commentary.git'
 Plugin 'https://github.com/kana/vim-textobj-user.git'
 Plugin 'https://github.com/tkhren/vim-textobj-numeral.git'
 Plugin 'michaeljsmith/vim-indent-object'
+Plugin 'rhysd/vim-clang-format'
+Plugin 'tpope/vim-fugitive'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -50,9 +52,9 @@ filetype plugin indent on    " required
 "
 syntax on " Syntax highlighting
 
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set expandtab " use spaces instead of tabs.
 set smarttab " let's tab key insert 'tab stops', and bksp deletes tabs.
 set shiftround " tab / shifting moves to closest tabstop.
@@ -131,7 +133,7 @@ set undofile
 " Youcompleteme
 let g:ycm_server_python_interpreter= '/usr/bin/python2'
 let g:ycm_python_binary_path = '/usr/bin/python2'
-let g:ycm_global_ycm_extra_conf = $HOME . '/.vim/.ycm_extra_conf.py' 
+let g:ycm_global_ycm_extra_conf = $HOME . '/optimus/vehicle/.ycm_extra_conf.py' 
 let g:ycm_goto_buffer_command = 'new-tab'
 nnoremap <leader>jd :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>jD :YcmCompleter GoToDeclaration<CR>
@@ -175,9 +177,17 @@ vnoremap <silent> <expr> p <sid>Repl()
 " nmap <silent> <A-Right> :wincmd l<CR>
 set showcmd
 set tabpagemax=100
-autocmd BufNewFile,BufRead * setlocal formatoptions-=cro
+" autocmd BufNewFile,BufRead * setlocal formatoptions-=cro
 
 set relativenumber
 
 nnoremap <leader>r :w \| ! chmod +x %:p && %:p<Enter>
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/
+nnoremap <leader>f :ClangFormat<Enter>
+
+set textwidth=80
+set wrap
+
+set wildmenu
+set wildmode=longest,list,full
+set diffopt+=vertical
